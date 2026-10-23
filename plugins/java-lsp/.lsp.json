@@ -1,0 +1,8 @@
+{
+  "java": {
+    "command": "sh",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/start.sh"],
+    "extensionToLanguage": { ".java": "java" },
+    "startupTimeout": 120000
+  }
+}

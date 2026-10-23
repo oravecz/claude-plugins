@@ -1,0 +1,7 @@
+{
+  "dart": {
+    "command": "sh",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/start.sh"],
+    "extensionToLanguage": { ".dart": "dart" }
+  }
+}

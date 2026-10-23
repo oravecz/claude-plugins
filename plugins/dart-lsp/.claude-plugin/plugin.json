@@ -1,0 +1,7 @@
+{
+  "name": "dart-lsp",
+  "version": "0.2.0",
+  "description": "Native Dart LSP using the latest stable Dart SDK downloaded directly from the official Dart archive.",
+  "author": { "name": "Jim Cook" },
+  "license": "MIT"
+}

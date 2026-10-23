@@ -1,0 +1,9 @@
+{
+  "name": "pr-workflow",
+  "description": "Issue-driven GitHub workflow with worktrees, TDD, a local gate and human-gated merges.",
+  "version": "0.3.0",
+  "author": {
+    "name": "Jim Cook"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "oravecz",
+  "owner": {
+    "name": "Jim Cook"
+  },
+  "description": "Jim Cook's Claude Code plugins.",
+  "plugins": [
+    {
+      "name": "pr-workflow",
+      "source": "./plugins/pr-workflow",
+      "description": "Issue-driven GitHub workflow: conventional commits, worktrees, TDD, a local gate, epic branches and human-gated merges, with implement-issue and implement-epic skills."
+    },
+    {
+      "name": "typescript-lsp",
+      "source": "./plugins/typescript-lsp",
+      "description": "TypeScript LSP matching the project's installed compiler, with latest-version fallback."
+    },
+    {
+      "name": "java-lsp",
+      "source": "./plugins/java-lsp",
+      "description": "Eclipse JDT LS with an isolated, upstream Temurin JDK."
+    },
+    {
+      "name": "dart-lsp",
+      "source": "./plugins/dart-lsp",
+      "description": "Native Dart LSP using the latest official Dart SDK archive."
+    }
+  ]
+}

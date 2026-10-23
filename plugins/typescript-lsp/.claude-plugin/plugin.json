@@ -1,0 +1,7 @@
+{
+  "name": "typescript-lsp",
+  "version": "0.1.0",
+  "description": "Project-version-aware TypeScript 6 and TypeScript 7 language servers.",
+  "author": { "name": "Jim Cook" },
+  "license": "MIT"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "java-lsp",
+  "version": "0.2.0",
+  "description": "Eclipse JDT LS with direct upstream downloads and an isolated Temurin LTS JDK.",
+  "author": { "name": "Jim Cook" },
+  "license": "MIT"
+}

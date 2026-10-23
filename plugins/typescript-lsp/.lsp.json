@@ -1,0 +1,17 @@
+{
+  "typescript": {
+    "command": "sh",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/start.sh", "${CLAUDE_PROJECT_DIR}"],
+    "workspaceFolder": "${CLAUDE_PROJECT_DIR}",
+    "extensionToLanguage": {
+      ".ts": "typescript",
+      ".tsx": "typescriptreact",
+      ".mts": "typescript",
+      ".cts": "typescript",
+      ".js": "javascript",
+      ".jsx": "javascriptreact",
+      ".mjs": "javascript",
+      ".cjs": "javascript"
+    }
+  }
+}
