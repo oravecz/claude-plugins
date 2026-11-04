@@ -40,22 +40,35 @@ The installer:
 
 1. Adds `oravecz/claude-plugins` to this project's `.claude/settings.json` and
    refreshes its marketplace catalog, even if already registered at user scope.
+   Claude Code clones the marketplace into its shared cache, not into the
+   consumer project. The installer prints the actual cache location.
    It then updates **every installed `@oravecz` plugin** in this project's
    project/local scopes, including `pr-workflow` and disabled plugins.
-   Enablement is preserved; plugins that are not installed are not added.
-2. Offers `none` (default), `typescript`, `java`, or `dart`. A separate **y/n**
+   These updates preserve enablement and do not add missing plugins.
+2. Asks **y/n** before installing/enabling `pr-workflow@oravecz` at **project
+   scope**. Enter or `n` leaves existing enablement unchanged. Either way, it
+   reports whether the plugin is installed for this project, including any
+   user-scope installation, and prints installed versions, scopes, and file paths.
+3. Offers `none` (default), `typescript`, `java`, or `dart`. A separate **y/n**
    confirmation precedes installing/updating the selected service and enabling
    its plugin at **project scope**. Enter or `n` skips the step.
-3. Asks **y/n** before installing/updating `lat.md` and running `lat init` in
+4. Asks **y/n** before installing/updating `lat.md` and running `lat init` in
    this project. Select **Claude Code** and the global **lat** command in its
    interactive wizard.
 
-Every run refreshes installed marketplace plugins, even when both optional steps
-are skipped. Confirm a capability to also install/update its external service or
-initialize lat.md. Skipping leaves service installations and plugin enablement
-unchanged; `none` does not uninstall an existing LSP.
-Both confirmations default to **no**. Invalid responses are reprompted. lat
+Every run refreshes installed marketplace plugins, even when all optional steps
+are skipped. Confirm workflow setup to install/enable the workflow skills;
+confirm an external capability to install/update its service or initialize
+lat.md. Skipping leaves service installations and plugin enablement unchanged;
+`none` does not uninstall an existing LSP.
+All confirmations default to **no**. Invalid responses are reprompted. lat
 setup requires a terminal, not piped input, because its wizard selects agents.
+
+The marketplace clone normally lives at `~/.claude/plugins/marketplaces/oravecz`.
+With `CLAUDE_CONFIG_DIR` set, it lives under that configuration directory instead.
+Installed plugin files are cached separately; use the paths printed by the
+installer or `claude plugin marketplace list --json` and `claude plugin list --json`
+to locate them. Registering the marketplace alone does not install its plugins.
 
 The GitHub marketplace must be published before running this installer. It
 does not silently replace the requested GitHub source with a local directory.
@@ -84,13 +97,12 @@ projects using that managed runtime.
 Confirmed plugin selection also reconciles conflicting keys in this project's
 `settings.local.json`; unrelated local settings remain intact.
 
-This bootstrap does **not** automatically install the workflow skills or
-`superpowers`. To use them, install separately from the consumer project:
+Confirming workflow setup installs `pr-workflow`, but does **not** install its
+`superpowers` prerequisite. Install that separately from the consumer project:
 
 ```sh
 claude plugin marketplace add obra/superpowers-marketplace --scope project
 claude plugin install superpowers@superpowers-marketplace --scope project
-claude plugin install pr-workflow@oravecz --scope project
 ```
 
 ### Language services
@@ -166,7 +178,7 @@ See the [lat.md setup guide](https://github.com/vercel-labs/lat.md/blob/main/lat
 ## When to update and verify
 
 - Rerun the installer to refresh installed `@oravecz` plugins after marketplace
-  releases. No language or lat.md selection is needed for plugin updates.
+  releases. No workflow, language, or lat.md confirmation is needed for plugin updates.
 - After language-server releases or changes to your project's TypeScript major
   version, select and confirm that capability to update its external tools too.
 - After lat.md releases, confirm its step again to update both the CLI and

@@ -16,7 +16,7 @@ Three skills separate policy from orchestration:
 
 GitHub issues, sub-issue ordering, comments, and PRs hold live project state; Git holds branches/worktrees. Keep live progress out of skill documents. `develop` means `origin/develop` when available, otherwise the repository's default branch; interpret examples accordingly.
 
-The installer targets its current working directory: project marketplace registration, refresh of every installed `@oravecz` project/local plugin for that directory, optional confirmed language setup, then optional confirmed lat.md installation/initialization. TypeScript's Node resolver selects an installed project compiler (TS6 legacy server, TS7 native server) or managed latest fallback. Java/Dart use verified upstream archives and atomic current symlinks; launchers resolve immutable release paths before shell exec.
+The installer targets its current working directory: project marketplace registration, refresh of every installed `@oravecz` project/local plugin for that directory, optional confirmed pr-workflow installation/enablement, optional confirmed language setup, then optional confirmed lat.md installation/initialization. It reports the shared marketplace cache location and pr-workflow installation status. TypeScript's Node resolver selects an installed project compiler (TS6 legacy server, TS7 native server) or managed latest fallback. Java/Dart use verified upstream archives and atomic current symlinks; launchers resolve immutable release paths before shell exec.
 
 ## Key Directories
 
