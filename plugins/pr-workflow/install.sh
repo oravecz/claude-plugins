@@ -5,8 +5,8 @@ set -eu
 step=preflight
 trap 'status=$?; if [ "$status" -ne 0 ]; then printf "\nFailed during %s. Fix the error above and rerun install.sh.\n" "$step" >&2; fi' 0
 
-if [ "$#" -ne 0 ]; then
-  printf 'Usage: %s\nRun from the project to configure.\n' "$0" >&2
+if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != --codex ]; }; then
+  printf 'Usage: %s [--codex]\nRun from the project to configure.\n' "$0" >&2
   exit 2
 fi
 
@@ -91,6 +91,19 @@ process.stdout.write(entries.some(p => p.id === id &&
   fi
 }
 
+if [ "${1-}" = --codex ]; then
+  # Codex reads the Claude marketplace/plugin manifests; it has no project scope or LSP plugins.
+  step='Codex pr-workflow installation'
+  require codex
+  require git
+  printf 'Installing pr-workflow skills for Codex (user-wide); Claude Code, LSP, and lat.md setup are skipped.\n'
+  codex plugin marketplace add oravecz/claude-plugins
+  codex plugin marketplace upgrade oravecz
+  codex plugin add pr-workflow@oravecz
+  printf '\nDone. Restart Codex to load the skills. Install superpowers from the Codex plugin directory if missing.\n'
+  exit 0
+fi
+
 require claude
 require git
 require node
@@ -101,8 +114,16 @@ printf 'Configuring project: %s\n' "$project_dir"
 step='project marketplace registration and refresh'
 # Repeating add is intentional: a cached/user marketplace is not a declaration
 # in this project's settings. Claude merges the existing settings.
+printf '\nRegistering oravecz: Claude Code clones the marketplace into its shared cache, not this project.\n'
 claude plugin marketplace add oravecz/claude-plugins --scope project
 claude plugin marketplace update oravecz
+marketplaces=$(claude plugin marketplace list --json)
+printf '%s\n' "$marketplaces" | node -e '
+const entries = JSON.parse(require("fs").readFileSync(0, "utf8"));
+const marketplace = entries.find(entry => entry.name === "oravecz");
+if (!marketplace?.installLocation) throw new Error("Cannot locate the registered oravecz marketplace cache");
+console.log(`Marketplace cache: ${marketplace.installLocation}`);
+'
 
 step='current-project oravecz plugin updates'
 plugins=$(claude plugin list --json)
@@ -123,6 +144,32 @@ for target in $updates; do
   step="plugin update $plugin ($scope)"
   claude plugin update "$plugin" --scope "$scope"
 done
+
+printf '\n'
+if confirm 'Install/enable pr-workflow@oravecz for this project?'; then
+  install_plugin pr-workflow@oravecz ''
+  printf 'Enabled pr-workflow@oravecz for this project.\n'
+else
+  printf 'Skipping pr-workflow installation and enablement; existing enablement is unchanged.\n'
+fi
+
+step='pr-workflow installation status'
+plugins=$(claude plugin list --json)
+printf '%s\n' "$plugins" | node -e '
+const entries = JSON.parse(require("fs").readFileSync(0, "utf8"));
+const project = process.argv[1];
+const installed = entries.filter(plugin => plugin.id === "pr-workflow@oravecz" &&
+  (plugin.scope === "user" ||
+    (plugin.projectPath === project && ["project", "local"].includes(plugin.scope))));
+if (installed.length === 0) {
+  console.log("pr-workflow@oravecz: not installed for this project.");
+} else {
+  for (const plugin of installed) {
+    console.log(`pr-workflow@oravecz: installed (${plugin.scope} scope, version ${plugin.version}).`);
+    console.log(`Plugin files: ${plugin.installPath}`);
+  }
+}
+' "$project_dir"
 
 printf '\nLSP language: 0) none  1) typescript  2) java  3) dart\n'
 while :; do

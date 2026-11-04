@@ -1,7 +1,7 @@
 # claude-plugins
 
 Personal Claude Code marketplace for PR workflows and TypeScript, Java, and
-Dart language-server plugins, with a project installer for optional LSP and lat.md.
+Dart language-server plugins, with a project installer for workflow skills, LSP, and lat.md.
 
 ## Set up a project
 
@@ -14,11 +14,20 @@ cd /path/to/my-project
 
 The installer registers `oravecz/claude-plugins` in project-level settings and
 updates all installed `@oravecz` plugins in this project's project/local scopes.
-It then offers a language (`none` by default, TypeScript, Java, or Dart) and asks
-for y/n confirmation before LSP setup and before lat.md installation/initialization.
-Plugin refresh runs even when optional setup is skipped; existing enablement and
-unselected external services are preserved. User-scope and other-project plugin
+Claude Code keeps a shared marketplace clone outside the project; the installer
+prints its actual cache location.
+
+It then asks for y/n confirmation before installing/enabling `pr-workflow`,
+before optional LSP setup (`none` by default, TypeScript, Java, or Dart), and
+before lat.md installation/initialization. All confirmations default to no.
+The workflow step reports whether `pr-workflow` is installed and where its files
+are cached. Plugin refresh runs even when setup is skipped; skipping preserves
+existing enablement and external services. User-scope and other-project plugin
 installation records are not updated.
+
+For Codex, run `install.sh --codex` instead. It installs only the `pr-workflow`
+skills, user-wide, from the same marketplace and skips Claude Code, LSP, and
+lat.md setup. See [Codex](plugins/pr-workflow/README.md#codex).
 
 The root launcher delegates to
 [`plugins/pr-workflow/install.sh`](plugins/pr-workflow/install.sh) without changing
