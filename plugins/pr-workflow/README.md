@@ -74,6 +74,21 @@ The GitHub marketplace must be published before running this installer. It
 does not silently replace the requested GitHub source with a local directory.
 For unpublished plugin development, load a plugin with `claude --plugin-dir`.
 
+### Codex
+
+```sh
+/path/to/claude-plugins/install.sh --codex
+```
+
+Codex reads this repository's Claude marketplace and plugin manifests, so
+`--codex` runs `codex plugin marketplace add oravecz/claude-plugins`, refreshes
+that marketplace, and installs `pr-workflow@oravecz`. No confirmation is asked,
+and no Claude Code, LSP, or lat.md step runs. Codex records plugins in
+`~/.codex/config.toml`, so the installation is **user-wide**; the Codex CLI has
+no project scope. Requires the `codex` CLI and Git on `PATH`. Install the Codex
+`superpowers` plugin separately (`/plugins` in Codex, search for superpowers),
+then restart Codex.
+
 ### Prerequisites and scope
 
 - Current Claude Code CLI, Git, and a current Node.js LTS are bootstrap

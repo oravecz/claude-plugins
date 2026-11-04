@@ -25,6 +25,10 @@ are cached. Plugin refresh runs even when setup is skipped; skipping preserves
 existing enablement and external services. User-scope and other-project plugin
 installation records are not updated.
 
+For Codex, run `install.sh --codex` instead. It installs only the `pr-workflow`
+skills, user-wide, from the same marketplace and skips Claude Code, LSP, and
+lat.md setup. See [Codex](plugins/pr-workflow/README.md#codex).
+
 The root launcher delegates to
 [`plugins/pr-workflow/install.sh`](plugins/pr-workflow/install.sh) without changing
 the working directory. See its [README](plugins/pr-workflow/README.md#set-up-a-project)

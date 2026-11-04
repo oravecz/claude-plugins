@@ -5,8 +5,8 @@ set -eu
 step=preflight
 trap 'status=$?; if [ "$status" -ne 0 ]; then printf "\nFailed during %s. Fix the error above and rerun install.sh.\n" "$step" >&2; fi' 0
 
-if [ "$#" -ne 0 ]; then
-  printf 'Usage: %s\nRun from the project to configure.\n' "$0" >&2
+if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != --codex ]; }; then
+  printf 'Usage: %s [--codex]\nRun from the project to configure.\n' "$0" >&2
   exit 2
 fi
 
@@ -90,6 +90,19 @@ process.stdout.write(entries.some(p => p.id === id &&
     fi
   fi
 }
+
+if [ "${1-}" = --codex ]; then
+  # Codex reads the Claude marketplace/plugin manifests; it has no project scope or LSP plugins.
+  step='Codex pr-workflow installation'
+  require codex
+  require git
+  printf 'Installing pr-workflow skills for Codex (user-wide); Claude Code, LSP, and lat.md setup are skipped.\n'
+  codex plugin marketplace add oravecz/claude-plugins
+  codex plugin marketplace upgrade oravecz
+  codex plugin add pr-workflow@oravecz
+  printf '\nDone. Restart Codex to load the skills. Install superpowers from the Codex plugin directory if missing.\n'
+  exit 0
+fi
 
 require claude
 require git
