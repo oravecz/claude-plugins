@@ -77,7 +77,7 @@ No repository build, test, or lint scripts are defined. Root `install.sh` delega
 
 Claude Code, Git, and Node are bootstrap prerequisites; Node parses inventory even when optional setup is skipped. TypeScript and lat.md use npm, with engine-strict checks (current TypeScript server needs Node >=22.22.2). Java uses tar/Python 3.9+; Dart uses unzip. Do not use system package managers or sudo. No repository package.json, lockfile, or Bun requirement exists.
 
-Executing the workflows requires Git worktrees, authenticated GitHub CLI `gh`, and the `superpowers` plugin. Consumer projects must provide npm tooling: `npm ci` installs their dependencies and `npm run gate` runs their lint, build, and all test suites. These are **not commands supplied by this repository**; no `package.json` exists here.
+Executing the workflows requires Git worktrees, authenticated GitHub CLI `gh`, and the `superpowers` plugin. Consumer projects must provide npm tooling: `npm ci` installs their dependencies and `npm run gate` (or `npm run validate` when no `gate` script exists) runs their lint, build, and all test suites. These are **not commands supplied by this repository**; no `package.json` exists here.
 
 Managed LSP tools live under `${XDG_DATA_HOME:-$HOME/.local/share}/oravecz/`; lat.md is a global npm CLI. Java uses an isolated latest Temurin LTS JDK regardless of project JAVA_HOME; Dart uses its downloaded SDK regardless of PATH/Flutter/FVM. Confirmed lat setup invokes its interactive wizard in the consumer project.
 

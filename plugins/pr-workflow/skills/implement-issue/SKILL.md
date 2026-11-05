@@ -30,8 +30,13 @@ project's own instructions (`CLAUDE.md`, `AGENTS.md`), those win.
 
 Abort with a plain report if any check fails. Do not "fix and continue".
 
-1. **Primary checkout.** `git rev-parse --git-common-dir` must print `.git`.
-   This skill starts in the primary checkout, never inside a worktree.
+1. **Starting checkout.** If `git rev-parse --git-common-dir` prints `.git`,
+   this is the primary checkout and step 1 creates the worktree. Otherwise it
+   is a linked worktree, such as one a harness (T3 Code, …) created before
+   this skill ran. **Adopt** it as the issue's worktree only if it is on this
+   issue's branch (`*/<n>-*`, a resume) or it is fresh: after
+   `git fetch origin`, `git rev-list --count origin/<base>..HEAD` prints `0`.
+   Any other worktree holds other work: stop.
 2. **Issue is open.**
    `gh issue view <n> --json number,title,state,labels,body,comments`.
    Refuse if closed.
@@ -42,8 +47,8 @@ Abort with a plain report if any check fails. Do not "fix and continue".
    outside decision. If the body itself reads as unresolved (open (a)/(b)/(c)
    options, `TBD` acceptance criteria), report it as a **malformed issue**
    under rule 2; do not guess the decision.
-5. **Clean tree.** `git status --porcelain` in the primary checkout must show no
-   modified or staged files.
+5. **Clean tree.** `git status --porcelain` in the starting checkout must show
+   no modified or staged files.
 
 ## 1. Worktree (rule 6)
 
@@ -60,11 +65,21 @@ git fetch origin
 git worktree add .worktrees/<n>-<slug> -b <type>/<n>-<slug> origin/<base>
 ```
 
+In an adopted worktree (step 0 item 1), create the branch in place instead,
+and use this worktree's path wherever the steps below say
+`.worktrees/<n>-<slug>`:
+
+```sh
+git fetch origin
+git switch -c <type>/<n>-<slug> origin/<base>
+```
+
 The base **must** be `origin/<base>`; if you use `superpowers:using-git-worktrees`
 or a native worktree tool instead, verify with
 `git merge-base --is-ancestor origin/<base> <type>/<n>-<slug>`.
 
-Run `npm ci` in the worktree, then a baseline `npm run gate` (rule 9). A
+Run `npm ci` in the worktree, then a baseline gate (`npm run gate`, or
+`npm run validate`; rule 9). A
 baseline that is already red is reported, not worked around. All further work
 happens in the worktree.
 
@@ -109,8 +124,9 @@ the user.
 ## 4. Document and gate (rule 9)
 
 Update the project's documentation for every changed behaviour (commit as
-`docs(<scope>): …`), then run `npm run gate` from the worktree. Never weaken
-the gate (scripts, lint rules, skipped tests) to pass.
+`docs(<scope>): …`), then run the gate (`npm run gate`, or
+`npm run validate`) from the worktree. Never weaken the gate (scripts, lint
+rules, skipped tests) to pass.
 
 ## 5. PR
 
@@ -138,7 +154,11 @@ Do not merge on your own.
 
 ## 7. On approval only: merge and clean up
 
-Run from the **primary checkout**; a worktree cannot remove itself.
+Run from the **primary checkout**; a worktree cannot remove itself. In an
+adopted worktree, run in place: item 2 is only `git fetch origin` (local
+`develop` belongs to the primary checkout), and item 3 is
+`git switch --detach origin/<base>`, leaving the worktree to the harness that
+created it.
 
 1. **Merge:** `gh pr merge <pr> --squash`.
 2. **Update develop:** `git checkout develop && git pull --ff-only origin
@@ -167,7 +187,7 @@ Run from the **primary checkout**; a worktree cannot remove itself.
 - No implementation code before a failing test exists (for a refactor issue,
   a passing characterization test); every commit is a conventional commit.
 - One worktree per issue, based on `origin/<base>` (`origin/develop` unless
-  `implement-epic` passed its epic branch); never implement in the primary
-  checkout.
+  `implement-epic` passed its epic branch), created by step 1 or adopted when
+  fresh; never implement in the primary checkout.
 - The PR opens only on a passing gate; never merge without the user's explicit
   approval.
