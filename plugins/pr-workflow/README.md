@@ -16,8 +16,9 @@ Install only this plugin inside Claude Code:
 
 ## What a project must provide
 
-- A `gate` npm script (`npm run gate`) that runs the project's lint, build
-  and every test suite, exiting non-zero at the first failure.
+- A `gate` npm script (`npm run gate`), or failing that a `validate` script,
+  that runs the project's lint, build and every test suite, exiting non-zero
+  at the first failure.
 - `gh` authenticated for the repository.
 - The `superpowers` plugin, which `implement-issue` uses for planning, TDD
   and execution.

@@ -59,7 +59,8 @@ the epic's own pull request into `develop` is the run's only human gate.
       are green: `gh pr merge <pr> --squash`. No human gate at this level.
    3. **Close the sub-issue yourself:**
       `gh issue close <sub> --comment "Merged into <epic-branch> by #<pr> (<squash sha>)."`
-   4. Clean up from the primary checkout: `git fetch origin`, then
+   4. Clean up from the primary checkout (in place for an adopted worktree):
+      `git fetch origin`, then
       `implement-issue` step 7 items 3, 4 and 6 (worktree, branch, stale
       check). Local `develop` does not move during an epic.
    5. Report one line: sub-issue number, PR URL, squash commit.
@@ -90,7 +91,7 @@ the epic's own pull request into `develop` is the run's only human gate.
    ```sh
    git worktree add --detach .worktrees/<epic>-land origin/<epic-branch>
    # in it: npm ci, then
-   npm run gate
+   npm run gate   # or npm run validate (rule 9)
    ```
 
    Remove that worktree afterwards (`git worktree remove --force`, then
@@ -104,6 +105,9 @@ the epic's own pull request into `develop` is the run's only human gate.
    gh pr merge <pr> --merge --subject "<the PR title> (#<pr>)"
    git checkout develop && git pull --ff-only origin develop
    ```
+
+   In an adopted worktree, run only `git fetch origin`; local `develop`
+   belongs to the primary checkout.
 
    A merge commit, never a squash, so `develop` keeps one squash commit per
    sub-issue. Then close the epic with a comment that links the PR and ends

@@ -82,7 +82,10 @@ gitignored `.worktrees/` from `origin/develop`, or from
 `origin/epic/<epic#>-<slug>` for an epic's sub-issue:
 `git worktree add .worktrees/<issue#>-<slug> -b <branch> origin/<base>`. Then
 install dependencies in the worktree (`npm ci`); that also installs any git
-hooks the project defines there.
+hooks the project defines there. A fresh worktree that a harness created
+before the workflow started (clean, no commits beyond `origin/<base>`) may
+serve as the issue's worktree: create the branch in it with
+`git switch -c <branch> origin/<base>`.
 
 ## 7. Epic flow: an epic branch, auto-merged sub-issues, one human gate
 
@@ -110,10 +113,10 @@ without that approval.
 
 ## 9. The gate
 
-A PR opens only when `npm run gate` exits 0 in the worktree. Every project
-defines that script; it runs the project's lint, build and every test suite,
-stopping at the first failure. If the project has no `gate` script, stop and
-ask for one. Fix lint errors with the project's lint fixer and commit the
+A PR opens only when the gate exits 0 in the worktree: `npm run gate`, or
+`npm run validate` when the project has no `gate` script. That script runs the
+project's lint, build and every test suite, stopping at the first failure. If
+the project has neither script, stop and ask for one. Fix lint errors with the project's lint fixer and commit the
 result. A change confined to Markdown files may skip the gate. CI may run no
 tests on pull requests, so this local gate is the only test gate. The gate is
 an exit code, never a judgment call; never weaken it (scripts, lint rules,
